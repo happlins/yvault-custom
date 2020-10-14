@@ -1,4 +1,4 @@
-pragma solidity ^ 0.5.0;
+pragma solidity ^0.5.16;
 
 import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
@@ -6,6 +6,11 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+
+// 用于兼容自定义token
+interface Mint {
+    function mint(address account, uint amount) external;
+}
 
 // File: contracts/IRewardDistributionRecipient.sol
 
@@ -29,13 +34,10 @@ contract IRewardDistributionRecipient is Ownable {
 // File: contracts/CurveRewards.sol
 
 contract LPTokenWrapper {
-    using SafeMath
-    for uint256;
-    using SafeERC20
-    for IERC20;
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
-    // ycrv token
-    IERC20 public y = IERC20(0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8);
+    IERC20 public y;
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
@@ -62,7 +64,7 @@ contract LPTokenWrapper {
 }
 
 contract BeeHoneyRewards is LPTokenWrapper, IRewardDistributionRecipient {
-    IERC20 public bhy = IERC20(0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83);
+    IERC20 public bhy;
     uint256 public constant DURATION = 15 minutes;
 
     // 初始数量1000bhy
@@ -86,6 +88,11 @@ contract BeeHoneyRewards is LPTokenWrapper, IRewardDistributionRecipient {
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
+
+    constructor (IERC20 _y, IERC20 _bhy) public {
+        y = _y;
+        bhy = _bhy;
+    }
 
     // 查看奖励时间，
     // 如果当前时间，小于本期结束时间，返回当前时间
@@ -139,7 +146,7 @@ contract BeeHoneyRewards is LPTokenWrapper, IRewardDistributionRecipient {
             // 减半
             initreward = initreward.mul(49).div(100);
             // 铸币
-            bhy.mint(address(this), initreward);
+            Mint(address(bhy)).mint(address(this), initreward);
 
             // 奖励速率
             rewardRate = initreward.div(DURATION);
@@ -206,7 +213,7 @@ contract BeeHoneyRewards is LPTokenWrapper, IRewardDistributionRecipient {
             uint256 leftover = remaining.mul(rewardRate);
             rewardRate = reward.add(leftover).div(DURATION);
         }
-        bhy.mint(address(this), reward);
+        Mint(address(bhy)).mint(address(this), reward);
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp.add(DURATION);
         emit RewardAdded(reward);

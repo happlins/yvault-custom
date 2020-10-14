@@ -2,7 +2,7 @@
  *Submitted for verification at Etherscan.io on 2020-08-13
 */
 
-pragma solidity ^0.5.16;
+pragma solidity ^0.5.17;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -10,11 +10,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-interface Controller {
-    function withdraw(address, uint) external;
-    function balanceOf(address) external view returns (uint);
-    function earn(address, uint) external;
-}
+import "../interfaces/Controller.sol";
 
 contract iVault is ERC20, ERC20Detailed {
     using SafeERC20 for IERC20;

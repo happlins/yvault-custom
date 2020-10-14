@@ -7,14 +7,11 @@
 pragma solidity ^0.5.17;
 
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-
-interface Controller {
-    function vaults(address) external view returns (address);
-    function rewards() external view returns (address);
-}
+import "../interfaces/Controller.sol";
 
 /*
 
@@ -89,7 +86,7 @@ contract StrategyDForceUSDT {
         controller = 0xe14e60d0F7fb15b1A98FDE88A3415C17b023bf36;
         getName = string(
             abi.encodePacked("yfii:Strategy:", 
-                abi.encodePacked(IERC20(want).name(),"DF Token"
+                abi.encodePacked(ERC20Detailed(want).name(),"DF Token"
                 )
             ));
         swap2YFIIRouting = [output,weth,yfii];
