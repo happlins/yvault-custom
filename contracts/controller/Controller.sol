@@ -132,8 +132,8 @@ contract Controller {
         } else {
             IERC20(_token).safeTransfer(_strategy, _amount);
         }
-        Strategy(_strategy).deposit();
         //存钱
+        Strategy(_strategy).deposit();
     }
 
     // 获取策略器对应代币的余额
