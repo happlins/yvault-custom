@@ -1,5 +1,17 @@
 # 减半合约实验
 
+### 减半逻辑和收益计算
+
+1. 当管理员，通过notifyRewardAmount方法初始化第一期奖励数，并初始化相关参数
+   - periodFinish: 用于记录下一期开始时间
+   - rewardRate: 奖励速率，在同一期中该速率不变（例如第一期奖励token数为100，每分钟奖励1个token，不够用户是否存取都不变）
+   - lastUpdateTime: 记录最后一次更新奖励的时间，在用户存取，获取奖励时，会触发方法更新该值，并更新每个token的收益数。
+   - rewardPerTokenStored: 该值记录的是下图中的面积，也就是在某个时间段内每个token的奖励数。
+
+token收益，如下图所示，横坐标为时间t,纵坐标为该时刻每个token的收益，面积为所有时间内每天token的收益
+
+![token收益图](../../res/img/token收益示意图.png)
+
 #### 部署合约
 ```javascript
 const NewToken = artifacts.require("NewToken")
@@ -43,8 +55,9 @@ newToken.mint.call(accounts[0],"100000000000000000000")
 // 也可自行修改，initreward和DURATION参数
 beeHoneyRewards.notifyRewardAmount.call(1000 * 1e18)
 
+// 授权合约账号
+newToken.approve.call(accounts[0],"50000000000000000000")
 // 存钱500 nt token
-// 报错，需要解决
 beeHoneyRewards.state.call("50000000000000000000")
 
 // 获取奖励，发送到用户账号上
