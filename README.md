@@ -2,9 +2,9 @@
 
 #### 项目依赖
 
-安装openzeppelin依赖
+安装项目依赖
 ```shell script
-npm i @openzeppelin/contracts@2.5.1
+npm install
 ```
 
 #### 项目基本结构

@@ -14,7 +14,7 @@
 4.修改truffle-config.js文件，并安装插件
 
 ```shell script
-npm install truffle-hdwallet-provider
+npm install truffle-hdwallet-provider -s
 ```
 
 ```js
