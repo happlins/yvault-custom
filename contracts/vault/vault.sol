@@ -19,6 +19,7 @@ contract iVault is ERC20, ERC20Detailed {
 
     IERC20 public token;
 
+    // 下面两个参数用户，将95%的资金用于投资
     uint public min = 9500;
     uint public constant max = 10000;
     uint public earnLowerlimit; //池内空余资金到这个值就自动earn
@@ -64,12 +65,13 @@ contract iVault is ERC20, ERC20Detailed {
         earnLowerlimit = _earnLowerlimit;
     }
 
-    // Custom logic in here for how much the vault allows to be borrowed
-    // Sets minimum required on-hand to keep small withdrawals cheap
+    // 允许投资的最大金额
+    // 保证有足够的资金用于提款
     function available() public view returns (uint) {
         return token.balanceOf(address(this)).mul(min).div(max);
     }
 
+    // 投资，通过controller的earn调用，strategy的deposit方法，进行投资
     function earn() public {
         uint _bal = available();
         token.safeTransfer(controller, _bal);
@@ -81,13 +83,16 @@ contract iVault is ERC20, ERC20Detailed {
     }
 
     function deposit(uint _amount) public {
+        // 对应token池中，现存的余额（vault+strategy（还没有被投资的余额））
         uint _pool = balance();
         uint _before = token.balanceOf(address(this));
         token.safeTransferFrom(msg.sender, address(this), _amount);
         uint _after = token.balanceOf(address(this));
+        // 存币的数量
         _amount = _after.sub(_before);
-        // Additional check for deflationary tokens
+        // 通缩令牌的附加检查
         uint shares = 0;
+        // 以发布的Btoken数量
         if (totalSupply() == 0) {
             shares = _amount;
         } else {

@@ -123,17 +123,23 @@ contract StrategyDForceUSDT {
 
 
     function deposit() public {
+        // 获取USDT的余额
         uint _want = IERC20(want).balanceOf(address(this));
         if (_want > 0) {
+            // 授权
             IERC20(want).safeApprove(d, 0);
             IERC20(want).safeApprove(d, _want);
+            // 质押，获取dUSDT token（质押凭证）
             dERC20(d).mint(address(this), _want);
         }
 
+        // 获取dUSDT数量
         uint _d = IERC20(d).balanceOf(address(this));
         if (_d > 0) {
+            // 授权
             IERC20(d).safeApprove(pool, 0);
             IERC20(d).safeApprove(pool, _d);
+            // 质押dUSDT
             dRewards(pool).stake(_d);
         }
 
@@ -240,10 +246,12 @@ contract StrategyDForceUSDT {
         return _withdrew;
     }
 
+    // 获取USDT数量
     function balanceOfWant() public view returns (uint) {
         return IERC20(want).balanceOf(address(this));
     }
 
+    // 通过dforce USDT pool池，获取USDT的数量（包括利息）
     function balanceOfPool() public view returns (uint) {
         return (dRewards(pool).balanceOf(address(this))).mul(dERC20(d).getExchangeRate()).div(1e18);
     }
