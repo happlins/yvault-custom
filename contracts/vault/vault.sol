@@ -29,14 +29,14 @@ contract iVault is ERC20, ERC20Detailed {
     // controller地址
     address public controller;
 
-    constructor (address _token, uint _earnLowerlimit) public ERC20Detailed(
+    constructor (address _controller, address _token, uint _earnLowerlimit) public ERC20Detailed(
         string(abi.encodePacked("BeeHoney ", ERC20Detailed(_token).name())),
         string(abi.encodePacked("b", ERC20Detailed(_token).symbol())),
         ERC20Detailed(_token).decimals()
     ) {
         token = IERC20(_token);
         governance = tx.origin;
-        controller = 0x8C2a19108d8F6aEC72867E9cfb1bF517601b515f;
+        controller = _controller;
         earnLowerlimit = _earnLowerlimit;
     }
 

@@ -1,5 +1,12 @@
 # yfii yvault代码分析
 
+#### 项目依赖
+
+安装openzeppelin依赖
+```shell script
+npm i @openzeppelin/contracts@2.5.1
+```
+
 #### 项目基本结构
 
 [controller](./contracts/controller): 用于控制token对应的vault和strategy，以及连接vault和strategy的关系

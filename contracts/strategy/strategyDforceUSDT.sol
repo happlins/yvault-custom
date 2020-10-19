@@ -12,6 +12,9 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 import "../interfaces/Controller.sol";
+import "../interfaces/dforce/DRewards.sol";
+import "../interfaces/dforce/DERC20.sol";
+import "../interfaces/uni/UniswapRouter.sol";
 
 /*
 
@@ -27,33 +30,7 @@ import "../interfaces/Controller.sol";
  
 */
 
-interface dRewards {
-    function withdraw(uint) external;
-
-    function getReward() external;
-
-    function stake(uint) external;
-
-    function balanceOf(address) external view returns (uint);
-
-    function exit() external;
-}
-
-interface dERC20 {
-    function mint(address, uint256) external;
-
-    function redeem(address, uint) external;
-
-    function getTokenBalance(address) external view returns (uint);
-
-    function getExchangeRate() external view returns (uint);
-}
-
-interface UniswapRouter {
-    function swapExactTokensForTokens(uint, uint, address[] calldata, address, uint) external;
-}
-
-contract StrategyDForceUSDT {
+contract StrategyDforceUSDT {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;

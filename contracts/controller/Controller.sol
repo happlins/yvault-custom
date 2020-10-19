@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.5.17;
+
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -66,10 +67,10 @@ contract Controller {
     uint public split = 5000;
     uint public constant max = 10000;
 
-    constructor() public {
+    constructor(address _rewards) public {
         governance = tx.origin;
         onesplit = address(0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e);
-        rewards = 0x887F507EaAc58adD20263C6918538A9BdC882d47;
+        rewards = _rewards;
     }
 
     function setFactory(address _factory) public {
