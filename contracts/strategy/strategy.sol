@@ -96,8 +96,8 @@ contract Strategy {
         want = _want;
         getName = string(
             abi.encodePacked("yfii:Strategy:",
-            abi.encodePacked(IERC20(want).name(),
-            abi.encodePacked(":", IERC20(output).name())
+            abi.encodePacked(ERC20Detailed(want).name(),
+            abi.encodePacked(":", ERC20Detailed(output).name())
             )
             ));
         doApprove();
