@@ -1,6 +1,6 @@
 pragma solidity ^0.5.16;
 
-interface Controller {
+interface IController {
     function vaults(address) external view returns (address);
     function rewards() external view returns (address);
     function withdraw(address, uint) external;

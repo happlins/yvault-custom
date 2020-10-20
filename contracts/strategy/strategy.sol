@@ -12,7 +12,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-import "../interfaces/Controller.sol";
+import "../interfaces/IController.sol";
+import "../interfaces/uni/IUniswapRouter.sol";
 
 /*
 
@@ -42,18 +43,6 @@ interface Yam {
     function earned(address) external view returns (uint);
 }
 
-interface UniswapRouter {
-    function swapExactTokensForTokens(
-        uint amountIn,
-        uint amountOutMin,
-        address[] calldata path,
-        address to,
-        uint deadline
-    ) external returns (uint[] memory amounts);
-
-    function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts);
-
-}
 
 
 contract Strategy {
@@ -130,9 +119,9 @@ contract Strategy {
         }
 
         uint _fee = _amount.mul(withdrawalFee).div(withdrawalMax);
-        IERC20(want).safeTransfer(Controller(controller).rewards(), _fee);
+        IERC20(want).safeTransfer(IController(controller).rewards(), _fee);
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, _amount.sub(_fee));
@@ -144,7 +133,7 @@ contract Strategy {
         _withdrawAll();
         balance = IERC20(want).balanceOf(address(this));
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, balance);
@@ -179,7 +168,7 @@ contract Strategy {
     function harvest() public {
         require(!Address.isContract(msg.sender), "!contract");
         Yam(pool).getReward();
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
 
@@ -190,12 +179,12 @@ contract Strategy {
         uint _callfee = b.mul(callfee).div(max);
         uint _burnfee = b.mul(burnfee).div(max);
         //4%  3% team +1% insurance
-        IERC20(yfii).safeTransfer(Controller(controller).rewards(), _fee);
+        IERC20(yfii).safeTransfer(IController(controller).rewards(), _fee);
         //call fee 1%
         IERC20(yfii).safeTransfer(msg.sender, _callfee);
         //TODO:把销毁地址改为 reward pool地址
         //burn fee 5%
-        IERC20(yfii).safeTransfer(Controller(controller).rewards(), _burnfee);
+        IERC20(yfii).safeTransfer(IController(controller).rewards(), _burnfee);
 
         deposit();
 
@@ -207,8 +196,8 @@ contract Strategy {
         //90%
         uint256 _2yfii = IERC20(output).balanceOf(address(this)).mul(10).div(100);
         //10%
-        UniswapRouter(unirouter).swapExactTokensForTokens(_2token, 0, swap2TokenRouting, address(this), now.add(1800));
-        UniswapRouter(unirouter).swapExactTokensForTokens(_2yfii, 0, swap2YFIIRouting, address(this), now.add(1800));
+        IUniswapRouter(unirouter).swapExactTokensForTokens(_2token, 0, swap2TokenRouting, address(this), now.add(1800));
+        IUniswapRouter(unirouter).swapExactTokensForTokens(_2yfii, 0, swap2YFIIRouting, address(this), now.add(1800));
 
     }
 
@@ -230,7 +219,7 @@ contract Strategy {
     function harvertYFII() public view returns (uint[] memory amounts){//未收割的token 能换成多少yfii
         uint _pendingReward = balanceOfPendingReward().mul(10).div(100);
         //10%
-        return UniswapRouter(unirouter).getAmountsOut(_pendingReward, swap2YFIIRouting);
+        return IUniswapRouter(unirouter).getAmountsOut(_pendingReward, swap2YFIIRouting);
     }
 
     function setGovernance(address _governance) external {

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.17;
 
-interface Strategy {
+interface IStrategy {
     function want() external view returns (address);
 
     function deposit() external;

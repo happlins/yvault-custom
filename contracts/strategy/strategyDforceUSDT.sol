@@ -11,10 +11,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-import "../interfaces/Controller.sol";
+import "../interfaces/IController.sol";
 import "../interfaces/dforce/DRewards.sol";
 import "../interfaces/dforce/DERC20.sol";
-import "../interfaces/uni/UniswapRouter.sol";
+import "../interfaces/uni/IUniswapRouter.sol";
 
 /*
 
@@ -143,11 +143,11 @@ contract StrategyDforceUSDT {
         uint _fee = 0;
         if (withdrawalFee > 0) {
             _fee = _amount.mul(withdrawalFee).div(withdrawalMax);
-            IERC20(want).safeTransfer(Controller(controller).rewards(), _fee);
+            IERC20(want).safeTransfer(IController(controller).rewards(), _fee);
         }
 
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, _amount.sub(_fee));
@@ -161,7 +161,7 @@ contract StrategyDforceUSDT {
 
         balance = IERC20(want).balanceOf(address(this));
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, balance);
@@ -191,8 +191,8 @@ contract StrategyDforceUSDT {
         uint256 _2token = IERC20(output).balanceOf(address(this)).mul(90).div(100);
         // 10%的收益转换为yfii，用于说明中的用途
         uint256 _2yfii = IERC20(output).balanceOf(address(this)).mul(10).div(100);
-        UniswapRouter(unirouter).swapExactTokensForTokens(_2token, 0, swap2TokenRouting, address(this), now.add(1800));
-        UniswapRouter(unirouter).swapExactTokensForTokens(_2yfii, 0, swap2YFIIRouting, address(this), now.add(1800));
+        IUniswapRouter(unirouter).swapExactTokensForTokens(_2token, 0, swap2TokenRouting, address(this), now.add(1800));
+        IUniswapRouter(unirouter).swapExactTokensForTokens(_2yfii, 0, swap2YFIIRouting, address(this), now.add(1800));
     }
 
     function dosplit() internal {
@@ -202,7 +202,7 @@ contract StrategyDforceUSDT {
         uint _burnfee = b.mul(burnfee).div(max);
         // 将上面获取的10%收益做以下划分
         // 3%给开发人员,1%保险费用
-        IERC20(yfii).safeTransfer(Controller(controller).rewards(), _fee);
+        IERC20(yfii).safeTransfer(IController(controller).rewards(), _fee);
         // 调用合约费用，1%
         IERC20(yfii).safeTransfer(msg.sender, _callfee);
         // 5%给基金会用于回购

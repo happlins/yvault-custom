@@ -11,9 +11,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-import "../interfaces/Controller.sol";
+import "../interfaces/IController.sol";
 import "../interfaces/dforce/DERC20.sol";
-import "../interfaces/uni/UniswapRouter.sol";
+import "../interfaces/uni/IUniswapRouter.sol";
 
 /*
 
@@ -100,11 +100,11 @@ contract StrategyDforceUSDTKovan {
         uint _fee = 0;
         if (withdrawalFee > 0) {
             _fee = _amount.mul(withdrawalFee).div(withdrawalMax);
-            IERC20(want).safeTransfer(Controller(controller).rewards(), _fee);
+            IERC20(want).safeTransfer(IController(controller).rewards(), _fee);
         }
 
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, _amount.sub(_fee));
@@ -118,7 +118,7 @@ contract StrategyDforceUSDTKovan {
 
         balance = IERC20(want).balanceOf(address(this));
 
-        address _vault = Controller(controller).vaults(address(want));
+        address _vault = IController(controller).vaults(address(want));
         require(_vault != address(0), "!vault");
         // additional protection so we don't burn the funds
         IERC20(want).safeTransfer(_vault, balance);
@@ -132,13 +132,10 @@ contract StrategyDforceUSDTKovan {
     }
 
     function _withdrawSome(uint256 _amount) internal returns (uint) {
-        // 取款之前
+        uint _d = _amount.mul(1e18).div(dERC20(d).getExchangeRate());
         uint _before = IERC20(want).balanceOf(address(this));
-        // 取款
-        dERC20(d).redeem(address(this), _amount);
-        // 取款之后
+        dERC20(d).redeem(address(this), _d);
         uint _after = IERC20(want).balanceOf(address(this));
-        // 取款数
         uint _withdrew = _after.sub(_before);
         return _withdrew;
     }
