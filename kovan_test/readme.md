@@ -5,11 +5,11 @@
 你需要掌握remix和MetaMark工具的使用和kovan测试网的eth测试币。
 #### 说明
 
-dforce平台在kovan测试网部署有生息合约，通过编写对应[strategyDforceUSDT_kovan.sol](contracts/StrategyDforceUSDTKovan.sol)策略合约，进行投资，测试整个项目的运行。
+dforce平台在kovan测试网部署有生息合约，通过编写对应[strategyDforceUSDTKovan.sol](contracts/StrategyDforceUSDTKovan.sol)策略合约，进行投资，测试整个项目的运行。
 
 #### 部署和测试工具(remix)
 
-1.将本目录下，contracts目录中所有内容，拷贝到remix中,github目录时remix自动导入的包，可以忽略.
+1.将本目录下，contracts目录中所有内容，拷贝到remix中,github目录是remix自动导入的包，可以忽略.
 
 ![示意图](../res/img/remix-1.jpg)
 
