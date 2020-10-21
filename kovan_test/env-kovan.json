@@ -1,0 +1,7 @@
+{
+  "token-usdt": "0x07de306FF27a2B630B1141956844eB1552B956B5",
+  "vault": "0x5C23c2C6392c68e04Ea2369f0E767e810F6b8817",
+  "strategy": "0xAA860CBbC4feEdaF062963CCF2a07110be6C42C8",
+  "controller": "0x11dB87c4045b7b30AE96A0ED1c0095D668305ba7",
+  "strategyName": "Dforce"
+}

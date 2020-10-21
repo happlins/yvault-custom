@@ -7,6 +7,10 @@
 npm install
 ```
 
+#### 测试网络配置
+
+truffle 配置kovan测试网[README](README-kovan.md)
+
 #### 项目基本结构
 
 [controller](./contracts/controller): 用于控制token对应的vault和strategy，以及连接vault和strategy的关系
@@ -19,6 +23,7 @@ npm install
 
 [vault](./contracts/vault): 目标代币存储池(返回iToken)
 
+[kovan_test](./kovan_test): kovan测试dforce平台投资策略
 
 #### 项目架构逻辑
 

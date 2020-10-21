@@ -63,7 +63,7 @@ contract LPTokenWrapper {
     }
 }
 
-contract BeeHoneyRewards is LPTokenWrapper, IRewardDistributionRecipient {
+contract YfiiTokenRewards is LPTokenWrapper, IRewardDistributionRecipient {
     IERC20 public bhy;
     uint256 public constant DURATION = 15 minutes;
 

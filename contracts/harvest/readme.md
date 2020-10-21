@@ -16,8 +16,8 @@ token收益，如下图所示，横坐标为时间t,纵坐标为该时刻每个t
 #### 部署合约
 ```javascript
 const NewToken = artifacts.require("NewToken")
-const BeeHoney = artifacts.require("BeeHoney")
-const BeeHoneyRewards = artifacts.require("BeeHoneyRewards")
+const YfiiToken = artifacts.require("YfiiToken")
+const YfiiTokenRewards = artifacts.require("YfiiTokenRewards")
 
 
 module.exports = async function (deployer, network, accounts) {
@@ -28,15 +28,15 @@ module.exports = async function (deployer, network, accounts) {
     // 添加铸币者
     await newToken.addMinter(accounts[0])
     // BeeHoney 用于奖励代币
-    await deployer.deploy(BeeHoney, "BeeHoney", "BHY")
-    let beeHoney = await BeeHoney.deployed()
+    await deployer.deploy(YfiiToken, "YfiiToken", "YFII")
+    let yfiiToken = await YfiiToken.deployed()
 
     // 部署减半合约
-    await deployer.deploy(BeeHoneyRewards, NewToken.address, BeeHoney.address)
-    let beeHoneyRewards = await BeeHoneyRewards.deployed()
+    await deployer.deploy(YfiiTokenRewards, NewToken.address, BeeHoney.address)
+    let yfiiTokenRewards = await YfiiTokenRewards.deployed()
 
     // 将减半合约添加到BeeHoney的铸币者中
-    await beeHoney.addMinter(BeeHoneyRewards.address)
+    await yfiiToken.addMinter(YfiiTokenRewards.address)
 };
 
 ```
@@ -44,8 +44,8 @@ module.exports = async function (deployer, network, accounts) {
 #### 测试功能
 ```javascript
 let newToken = await NewToken.deployed()
-let beeHoney = await BeeHoney.deployed()
-let beeHoneyRewards = await BeeHoneyRewards.deployed()
+let yfiiToken = await YfiiToken.deployed()
+let yfiiTokenRewards = await YfiiTokenRewards.deployed()
 
 // 给指定地址充值newToken代币,(1000 nt)
 newToken.mint(accounts[0],"100000000000000000000")
@@ -53,16 +53,16 @@ newToken.mint(accounts[0],"100000000000000000000")
 // 传入参数需要和合约中的initreward的值保持一致
 // 总计2000BHY个奖励，按照每15分钟减半一次
 // 也可自行修改，initreward和DURATION参数
-beeHoneyRewards.notifyRewardAmount(1000 * 1e18)
+yfiiTokenRewards.notifyRewardAmount(1000 * 1e18)
 
 // 授权合约账号
 newToken.approve(accounts[0],"50000000000000000000")
 // 存钱500 nt token
-beeHoneyRewards.state("50000000000000000000")
+yfiiTokenRewards.state("50000000000000000000")
 
 // 获取奖励，发送到用户账号上
-beeHoneyRewards.getReward()
+yfiiTokenRewards.getReward()
 
 // 获取用户奖励数
-beeHoneyRewards.earned(accounts[0])
+yfiiTokenRewards.earned(accounts[0])
 ```
