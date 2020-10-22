@@ -144,7 +144,7 @@ contract YfiiTokenRewards is LPTokenWrapper, IRewardDistributionRecipient {
     modifier checkhalve() {
         if (block.timestamp >= periodFinish) {
             // 减半
-            initreward = initreward.mul(49).div(100);
+            initreward = initreward.mul(50).div(100);
             // 铸币
             Mint(address(bhy)).mint(address(this), initreward);
 
