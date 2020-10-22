@@ -42,7 +42,7 @@ contract iVault is ERC20, ERC20Detailed {
 
     function balance() public view returns (uint) {
         return token.balanceOf(address(this))
-        .add(Controller(controller).balanceOf(address(token)));
+        .add(IController(controller).balanceOf(address(token)));
     }
 
     function setMin(uint _min) external {
@@ -75,7 +75,7 @@ contract iVault is ERC20, ERC20Detailed {
     function earn() public {
         uint _bal = available();
         token.safeTransfer(controller, _bal);
-        Controller(controller).earn(address(token), _bal);
+        IController(controller).earn(address(token), _bal);
     }
 
     function depositAll() external {
@@ -119,7 +119,7 @@ contract iVault is ERC20, ERC20Detailed {
         uint b = token.balanceOf(address(this));
         if (b < r) {
             uint _withdraw = r.sub(b);
-            Controller(controller).withdraw(address(token), _withdraw);
+            IController(controller).withdraw(address(token), _withdraw);
             uint _after = token.balanceOf(address(this));
             uint _diff = _after.sub(b);
             if (_diff < _withdraw) {
