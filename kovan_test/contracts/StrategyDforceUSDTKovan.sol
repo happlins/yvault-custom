@@ -13,7 +13,6 @@ import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/uti
 
 import "../interfaces/IController.sol";
 import "../interfaces/dforce/DERC20.sol";
-import "../interfaces/uni/UniswapRouter.sol";
 
 /*
 
