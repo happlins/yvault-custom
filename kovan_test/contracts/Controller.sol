@@ -10,7 +10,7 @@ import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/tok
 import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/math/SafeMath.sol";
 import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/utils/Address.sol";
 
-import "../interfaces/Strategy.sol";
+import "../interfaces/IStrategy.sol";
 
 interface Converter {
     function convert(address) external returns (uint);
@@ -111,7 +111,7 @@ contract Controller {
         require(msg.sender == governance, "!governance");
         address _current = strategies[_token];
         if (_current != address(0)) {//之前的策略存在的话,那么就先提取所有资金
-            Strategy(_current).withdrawAll();
+            IStrategy(_current).withdrawAll();
         }
         strategies[_token] = _strategy;
     }
@@ -120,7 +120,7 @@ contract Controller {
     function earn(address _token, uint _amount) public {
         address _strategy = strategies[_token];
         //获取策略的合约地址
-        address _want = Strategy(_strategy).want();
+        address _want = IStrategy(_strategy).want();
         //策略需要的token地址
         if (_want != _token) {//如果策略需要的和输入的不一样,需要先转换
             address converter = converters[_token][_want];
@@ -134,18 +134,18 @@ contract Controller {
             IERC20(_token).safeTransfer(_strategy, _amount);
         }
         //存钱
-        Strategy(_strategy).deposit();
+        IStrategy(_strategy).deposit();
     }
 
     // 获取策略器对应代币的余额
     function balanceOf(address _token) external view returns (uint) {
-        return Strategy(strategies[_token]).balanceOf();
+        return IStrategy(strategies[_token]).balanceOf();
     }
 
     // 调用策略器的取钱模块，取出所有代币
     function withdrawAll(address _token) public {
         require(msg.sender == governance, "!governance");
-        Strategy(strategies[_token]).withdrawAll();
+        IStrategy(strategies[_token]).withdrawAll();
     }
 
     // 安全的发送指定的代币到管理员地址
@@ -158,7 +158,7 @@ contract Controller {
     function getExpectedReturn(address _strategy, address _token, uint parts) public view returns (uint expected) {
         uint _balance = IERC20(_token).balanceOf(_strategy);
         //获取策略器 某个代币的余额
-        address _want = Strategy(_strategy).want();
+        address _want = IStrategy(_strategy).want();
         //策略器需要的代币.
         (expected,) = OneSplitAudit(onesplit).getExpectedReturn(_token, _want, _balance, parts, 0);
     }
@@ -167,11 +167,11 @@ contract Controller {
     function yearn(address _strategy, address _token, uint parts) public {
         // This contract should never have value in it, but just incase since this is a public call
         uint _before = IERC20(_token).balanceOf(address(this));
-        Strategy(_strategy).withdraw(_token);
+        IStrategy(_strategy).withdraw(_token);
         uint _after = IERC20(_token).balanceOf(address(this));
         if (_after > _before) {
             uint _amount = _after.sub(_before);
-            address _want = Strategy(_strategy).want();
+            address _want = IStrategy(_strategy).want();
             uint[] memory _distribution;
             uint _expected;
             _before = IERC20(_want).balanceOf(address(this));
@@ -191,6 +191,6 @@ contract Controller {
 
     function withdraw(address _token, uint _amount) public {
         require(msg.sender == vaults[_token], "!vault");
-        Strategy(strategies[_token]).withdraw(_amount);
+        IStrategy(strategies[_token]).withdraw(_amount);
     }
 }
