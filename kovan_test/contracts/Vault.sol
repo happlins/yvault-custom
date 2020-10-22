@@ -10,7 +10,7 @@ import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/tok
 import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/math/SafeMath.sol";
 import "github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/utils/Address.sol";
 
-import "../interfaces/Controller.sol";
+import "../interfaces/IController.sol";
 
 contract iVault is ERC20, ERC20Detailed {
     using SafeERC20 for IERC20;
