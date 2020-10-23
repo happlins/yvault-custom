@@ -171,6 +171,7 @@ contract StrategyCompUSDTKovan {
     }
 
     function balanceOfC() public view returns (uint) {
+        // 注意括号问题，返回的uint需要用括号括起来，才能使用SafeMath库的方法
         return (ICErc20Delegator(c).balanceOf(address(this))).
         mul(ICErc20Delegator(c).exchangeRateStored()).div(1e18);
     }
