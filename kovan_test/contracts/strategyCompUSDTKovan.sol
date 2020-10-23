@@ -171,7 +171,8 @@ contract StrategyCompUSDTKovan {
     }
 
     function balanceOfC() public view returns (uint) {
-        return ICErc20Delegator(c).balanceOf(address(this)).mul(ICErc20Delegator(c).exchangeRateStored().div(1e18));
+        return (ICErc20Delegator(c).balanceOf(address(this))).
+        mul(ICErc20Delegator(c).exchangeRateStored()).div(1e18);
     }
 
     function balanceOf() public view returns (uint) {
