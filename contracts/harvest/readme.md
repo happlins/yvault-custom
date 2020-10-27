@@ -1,5 +1,7 @@
 # 减半合约实验
 
+二姨夫的减半合约说明[YFII 流动性挖矿合约安全性研究](https://github.com/sec-bit/yfii-security-review/blob/master/200803-YFII-Token-Pool1-Pool2.md#yfii--yfi-%E6%A0%B8%E5%BF%83%E5%90%88%E7%BA%A6%E7%AE%80%E6%9E%90)
+
 ### 减半逻辑和收益计算
 
 1. 当管理员，通过notifyRewardAmount方法初始化第一期奖励数，并初始化相关参数

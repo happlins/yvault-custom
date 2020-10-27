@@ -69,6 +69,12 @@ contract StrategyCompUSDTKovan {
             )
             ));
         swap2TokenRouting = [comp, want];
+        doApprove();
+    }
+
+    function doApprove() public {
+        IERC20(comp).safeApprove(unirouter, 0);
+        IERC20(comp).safeApprove(unirouter, uint(- 1));
     }
 
 
